@@ -1,4 +1,39 @@
-<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/" version="2.0"><channel><title>Good Kid, Hack City</title><description>A journey</description><link>http://localhost:2368/</link><generator>Ghost 0.7</generator><lastBuildDate>Tue, 29 Sep 2015 03:42:03 GMT</lastBuildDate><atom:link href="http://localhost:2368/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title>The Basics</title><description>&lt;p&gt;Hi.  I started a blog.  Surprised?  Me too.  But I told myself I'm going to jump into this thing with two feet.  Here's my best effort.&lt;/p&gt;
+<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/" version="2.0"><channel><title>Good Kid, Hack City</title><description>A journey</description><link>http://localhost:2368/</link><generator>Ghost 0.7</generator><lastBuildDate>Mon, 12 Oct 2015 05:40:46 GMT</lastBuildDate><atom:link href="http://localhost:2368/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title>Scrabble Tree</title><description>&lt;p&gt;The problem: design a data structure that finds every English word that can be made from a given bag of Scrabble letters&lt;/p&gt;
+
+&lt;p&gt;What data structure is best suited for this application?  In contemplating this problem, I imagined a structure that contained every word, and as we queried it with a&lt;/p&gt;</description><link>http://localhost:2368/scrabble-tree/</link><guid isPermaLink="false">19e3682e-9493-416d-8f47-31162737341e</guid><dc:creator>Adam Grimm</dc:creator><pubDate>Mon, 12 Oct 2015 05:23:36 GMT</pubDate><content:encoded>&lt;p&gt;The problem: design a data structure that finds every English word that can be made from a given bag of Scrabble letters&lt;/p&gt;
+
+&lt;p&gt;What data structure is best suited for this application?  In contemplating this problem, I imagined a structure that contained every word, and as we queried it with a group of letters, the list of potential words we could find would decrease as we removed each letter from our list until we honed in on our desired results.  &lt;/p&gt;
+
+&lt;p&gt;I think a tree is the best answer here.  We can build a tree in which each node holds a letter, and the children of each node represent the subset of words that begin with the letters we have traversed to get to this node.&lt;/p&gt;
+
+&lt;p&gt;For example, if we wanted to build this data structure using only the words "be", "bee", "been", "beer", and "beg", it would look like this: &lt;/p&gt;
+
+&lt;p&gt;&lt;img src="http://localhost:2368/content/images/2015/10/Tree-1.png" alt="example tree"&gt;&lt;/p&gt;
+
+&lt;p&gt;The periods are used to indicate the end of a word.&lt;/p&gt;
+
+&lt;p&gt;When we want to find words from a collection of letters, we travel down the tree, looking for children that are in our letters collection.  When we find a period, we know we have completed a word and can bubble that result back up the chain.  In pseudocode, the function looks like this:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;function findWords(letters){
+  declare a foundWords array
+  remove the current letter from the letters array
+  if this.children contains '.'
+    add the current letter to foundWords&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;iterate over all of this's children
+  if you find a letter in the letters array
+    call findWords on that child, passing in letters
+    prepend the current letter to each value returned from the child's findWords call
+    add these values to the foundWords array&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;return foundWords
+}&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;I'm not certain what the time complexity of this operation is.  Looking for words involves iterating over a node's children, finding one (or more), and then iterating over that node's children etc etc until we run out of letters to search for.  We don't have to look at every node; large swaths of the tree are almost certain to be ignored in each lookup.  However, more words in the tree does mean the operation will likely take longer, as you will probably find more words.  Does this point to linear time?&lt;/p&gt;
+
+&lt;p&gt;Or, is the operation linear with respect to the number of letters you are searching for?  &lt;/p&gt;
+
+&lt;p&gt;Anyone have any insight in this?&lt;/p&gt;</content:encoded></item><item><title>The Basics</title><description>&lt;p&gt;Hi.  I started a blog.  Surprised?  Me too.  But I told myself I'm going to jump into this thing with two feet.  Here's my best effort.&lt;/p&gt;
 
 &lt;h3 id="what"&gt;What?&lt;/h3&gt;
 
