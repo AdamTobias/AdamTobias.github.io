@@ -1,0 +1,246 @@
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>How I keep breaking Promises</title>
+    <meta name="description" content="">
+
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="shortcut icon" href="../favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="../assets/css/screen.css?v=956b95c66b">
+    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic%7COpen+Sans:700,400">
+
+    <link rel="canonical" href="index.html">
+    <meta name="referrer" content="origin">
+    
+    <meta property="og:site_name" content="Good Kid, Hack City">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="How I keep breaking Promises">
+    <meta property="og:description" content="Promises are a useful tool when dealing with asynchronous operations in Javascript.  They do some clean-up work to make your script read more like prose and have some neat methods to join your asynchronous functions together under one umbrella.  However,...">
+    <meta property="og:url" content="http://localhost:2368/how-i-keep-breaking-promises/">
+    <meta property="article:published_time" content="2015-11-02T05:46:44.692Z">
+    <meta property="article:modified_time" content="2015-11-02T05:46:44.688Z">
+    
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="How I keep breaking Promises">
+    <meta name="twitter:description" content="Promises are a useful tool when dealing with asynchronous operations in Javascript.  They do some clean-up work to make your script read more like prose and have some neat methods to join your asynchronous functions together under one umbrella.  However,...">
+    <meta name="twitter:url" content="http://localhost:2368/how-i-keep-breaking-promises/">
+    
+    <script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "Article",
+    "publisher": "Good Kid, Hack City",
+    "author": {
+        "@type": "Person",
+        "name": "Adam Grimm",
+        "url": "http://localhost:2368/author/adam",
+        "sameAs": null,
+        "description": null
+    },
+    "headline": "How I keep breaking Promises",
+    "url": "http://localhost:2368/how-i-keep-breaking-promises/",
+    "datePublished": "2015-11-02T05:46:44.692Z",
+    "dateModified": "2015-11-02T05:46:44.688Z",
+    "description": "Promises are a useful tool when dealing with asynchronous operations in Javascript.  They do some clean-up work to make your script read more like prose and have some neat methods to join your asynchronous functions together under one umbrella.  However,..."
+}
+    </script>
+
+    <meta name="generator" content="Ghost 0.7">
+    <link rel="alternate" type="application/rss+xml" title="Good Kid, Hack City" href="../rss/index.html">
+</head>
+<body class="post-template nav-closed">
+
+    <div class="nav">
+    <h3 class="nav-title">Menu</h3>
+    <a href="index.html#" class="nav-close">
+        <span class="hidden">Close</span>
+    </a>
+    <ul>
+            <li class="nav-home" role="presentation"><a href="../">Home</a></li>
+    </ul>
+    <a class="subscribe-button icon-feed" href="../rss/index.rss">Subscribe</a>
+</div>
+<span class="nav-cover"></span>
+
+
+    <div class="site-wrapper">
+
+        
+
+
+<header class="main-header post-head no-cover">
+    <nav class="main-nav  clearfix">
+        
+            <a class="menu-button icon-menu" href="index.html#"><span class="word">Menu</span></a>
+    </nav>
+</header>
+
+<main class="content" role="main">
+    <article class="post">
+
+        <header class="post-header">
+            <h1 class="post-title">How I keep breaking Promises</h1>
+            <section class="post-meta">
+                <time class="post-date" datetime="2015-11-01">01 November 2015</time> 
+            </section>
+        </header>
+
+        <section class="post-content">
+            <p>Promises are a useful tool when dealing with asynchronous operations in Javascript.  They do some clean-up work to make your script read more like prose and have some neat methods to join your asynchronous functions together under one umbrella.  However, while the goal of Promises is to make your life easier, I've learned that the opposite effect is often achieved.  So let's talk about Promises and how to, and how to not, use them!</p>
+
+<h4 id="whatarethesethings">What are these things?</h4>
+
+<p>Promises are a way to create an 'alternate timeline' for a sequence of events that rely on some asynchronous behavior.  They are <em>not</em> a means of freezing time; any code you have not associated with your promise, or promise chain, will keep on running while your promise waits to resolve.  </p>
+
+<p>A promise chain consists of two or more functions that rely on some output from asynchronous behavior before running.  The first function makes a promise to the second function that it will give it some data in the future.  The second function waits.  <em>THE REST OF YOUR CODE DOES NOT WAIT!</em>   When the promise resolves, it passes its results to the second function.  The third function now waits for the second function, etc, until the chain is complete.</p>
+
+<p><em>Promises do not return a result!</em>  Well, not in the way you would expect.  You can't write</p>
+
+<p><code>var result = somePromise(arg1);</code></p>
+
+<p>and expect to get some value back for result.  </p>
+
+<h4 id="sohowdoiusepromises">So how do I use Promises?</h4>
+
+<p>Promises demand that you provide a function to act on their results.  This function is passed as an argument in a .then method applied to the Promise in question.  Like so:</p>
+
+<p><code>somePromise(args).then(function(result){
+    console.log('The result was ', result);
+});</code></p>
+
+<p>This is the basic form of a promise chain.  All we are doing here is telling the 2nd action (the console log) to wait for the 1st action (the promise) to finish it's task before the 2nd action occurs.  </p>
+
+<p><em>The result of a Promise will always be passed as the first argument to whatever function shows up in the next .then call.</em></p>
+
+<p>So we can use this to set up a longer chain:</p>
+
+<p><code>somePromise(args).then(function(radius){
+    return radius*2;
+})
+.then(function(diameter){
+    return diameter*3.14159;
+})
+.then(function(circumference){
+    console.log('The circumference is ' + circumference);
+});</code></p>
+
+<p>Admittedly, this looks a little goofy when we are just chaining synchronous code together.  But that's just an example.  Promises show their use when asynchronous functions are in play:</p>
+
+<p><code>readFromFile(fileName).then(function(fileData){
+    return queryDatabaseForData(fileData);
+}).then(function(databaseData){
+    return writeToFile(databaseData);
+})</code></p>
+
+<p>It should be apparent now why Promises are useful.  In a clear and concise manner, we have built series of asynchronous function calls into a block of code that will run in a coherent manner.</p>
+
+<h4 id="sowhatsthecatch">So what's the catch?</h4>
+
+<p>See all those asynchronous functions up there?  readFromFile, queryDatabaseForData, and writeToFile?  These are all functions that return promises.  <em>If your asynchronous operations do not return a Promise, the special waiting behavior of Promises will be broken.</em>  In short, if you want the downstream code in your chain to wait, you need to return a Promise in the upstream code or only have synchronous operations.</p>
+
+<p>I screw this part up a lot.  Sometimes I try to make generic asynchronous calls in my .then functions, or other times I forget to return the Promise I've invoked.  Either of these things will make your code behave in a way you don't want it to.</p>
+
+<h4 id="otherneatthingsyoucando">Other neat things you can do</h4>
+
+<p>Promises have other related functionality that can really come in handy.  For example, Promise.all takes an array of Promises, and doesn't move to the 'then' behavior until they have all resolved.  The data produced will be an array storing the data from each Promise resolution, in the order they exist in the array:</p>
+
+<p><code>Promise.all([Promise1, Promise2, Promise3]).then(function(results){
+   for(var i = 0; i &lt; results.length; i++){
+       console.log('The result of Promise ' + i + ' was ' + results[i]);
+   }
+});</code></p>
+
+<p>Another neat one is Promise.race, which lets you provide an array of Promises and see which one finishes first.</p>
+
+<h4 id="closingthoughts">Closing thoughts</h4>
+
+<p>Promises are clean and practical when you apply them correctly, but I recommended spending some time with the documentation before trying to implement them yourself.  Look at how to generate your own promises -- when you can apply the Promise.promisify function, and what to do when you can't.  Look into error handling, which is also made tidy by Promises (with a possible loss in functionality).</p>
+
+<p>But don't let some of the complexity scare you away.  You don't have to understand all the nitty gritty to make Promises work for you!</p>
+            <div id="disqus_thread"></div>
+            <script>
+                /**
+                 *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+                 *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+                 */
+                /*
+                var disqus_config = function () {
+                    this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+                    this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+                };
+                */
+                (function() {  // DON'T EDIT BELOW THIS LINE
+                    var d = document, s = d.createElement('script');
+                    
+                    s.src = '//gkhcblog.disqus.com/embed.js';
+                    
+                    s.setAttribute('data-timestamp', +new Date());
+                    (d.head || d.body).appendChild(s);
+                })();
+            </script>
+            <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+        </section>
+
+        <footer class="post-footer">
+
+
+
+            <section class="author">
+                <h4><a href="../author/adam/">Adam Grimm</a></h4>
+
+                    <p>Read <a href="../author/adam/">more posts</a> by this author.</p>
+                <div class="author-meta">
+                    <span class="author-location icon-location">San Francisco, California</span>
+                    
+                </div>
+            </section>
+
+
+            <section class="share">
+                <h4>Share this post</h4>
+                <a class="icon-twitter" href="https://twitter.com/intent/tweet?text=How%20I%20keep%20breaking%20Promises&amp;url=http://localhost:2368/how-i-keep-breaking-promises/" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <span class="hidden">Twitter</span>
+                </a>
+                <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:2368/how-i-keep-breaking-promises/" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <span class="hidden">Facebook</span>
+                </a>
+                <a class="icon-google-plus" href="https://plus.google.com/share?url=http://localhost:2368/how-i-keep-breaking-promises/" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <span class="hidden">Google+</span>
+                </a>
+            </section>
+
+        </footer>
+
+    </article>
+</main>
+
+<aside class="read-next">
+    <a class="read-next-story prev no-cover" href="../on-backbone/">
+        <section class="post">
+            <h2>On Backbone</h2>
+            <p>I've been learning how to utilize the Backbone framework recently and I wanted to share some of my findings.…</p>
+        </section>
+    </a>
+</aside>
+
+
+
+        <footer class="site-footer clearfix">
+            <section class="copyright"><a href="../">Good Kid, Hack City</a> © 2015</section>
+            <section class="poweredby">Proudly published with <a href="https://ghost.org">Ghost</a></section>
+        </footer>
+
+    </div>
+
+    
+
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" src="../assets/js/jquery.fitvids.js?v=956b95c66b"></script>
+    <script type="text/javascript" src="../assets/js/index.js?v=956b95c66b"></script>
+
+</body>

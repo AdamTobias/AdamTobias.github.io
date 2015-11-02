@@ -1,4 +1,74 @@
-<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/" version="2.0"><channel><title>Good Kid, Hack City</title><description>A journey</description><link>http://localhost:2368/</link><generator>Ghost 0.7</generator><lastBuildDate>Sun, 25 Oct 2015 20:14:13 GMT</lastBuildDate><atom:link href="http://localhost:2368/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title>On Backbone</title><description>&lt;p&gt;I've been learning how to utilize the Backbone framework recently and I wanted to share some of my findings.  While flexibility is a point in Backbone's favor, this seems to have lead to a lack of agreed-upon best practices and some uncertainty on how exactly to fit the various views&lt;/p&gt;</description><link>http://localhost:2368/on-backbone/</link><guid isPermaLink="false">b5691711-4975-4bed-9266-5e1d0b74d574</guid><dc:creator>Adam Grimm</dc:creator><pubDate>Sun, 25 Oct 2015 19:53:22 GMT</pubDate><content:encoded>&lt;p&gt;I've been learning how to utilize the Backbone framework recently and I wanted to share some of my findings.  While flexibility is a point in Backbone's favor, this seems to have lead to a lack of agreed-upon best practices and some uncertainty on how exactly to fit the various views and models together.  Below is some of my insight on the matter.&lt;/p&gt;
+<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/" version="2.0"><channel><title>Good Kid, Hack City</title><description>A journey</description><link>http://localhost:2368/</link><generator>Ghost 0.7</generator><lastBuildDate>Mon, 02 Nov 2015 05:47:13 GMT</lastBuildDate><atom:link href="http://localhost:2368/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title>How I keep breaking Promises</title><description>&lt;p&gt;Promises are a useful tool when dealing with asynchronous operations in Javascript.  They do some clean-up work to make your script read more like prose and have some neat methods to join your asynchronous functions together under one umbrella.  However, while the goal of Promises is to make your life&lt;/p&gt;</description><link>http://localhost:2368/how-i-keep-breaking-promises/</link><guid isPermaLink="false">4027c1cf-ff83-4084-bba9-8dda2818670f</guid><dc:creator>Adam Grimm</dc:creator><pubDate>Mon, 02 Nov 2015 05:46:44 GMT</pubDate><content:encoded>&lt;p&gt;Promises are a useful tool when dealing with asynchronous operations in Javascript.  They do some clean-up work to make your script read more like prose and have some neat methods to join your asynchronous functions together under one umbrella.  However, while the goal of Promises is to make your life easier, I've learned that the opposite effect is often achieved.  So let's talk about Promises and how to, and how to not, use them!&lt;/p&gt;
+
+&lt;h4 id="whatarethesethings"&gt;What are these things?&lt;/h4&gt;
+
+&lt;p&gt;Promises are a way to create an 'alternate timeline' for a sequence of events that rely on some asynchronous behavior.  They are &lt;em&gt;not&lt;/em&gt; a means of freezing time; any code you have not associated with your promise, or promise chain, will keep on running while your promise waits to resolve.  &lt;/p&gt;
+
+&lt;p&gt;A promise chain consists of two or more functions that rely on some output from asynchronous behavior before running.  The first function makes a promise to the second function that it will give it some data in the future.  The second function waits.  &lt;em&gt;THE REST OF YOUR CODE DOES NOT WAIT!&lt;/em&gt;   When the promise resolves, it passes its results to the second function.  The third function now waits for the second function, etc, until the chain is complete.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Promises do not return a result!&lt;/em&gt;  Well, not in the way you would expect.  You can't write&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;var result = somePromise(arg1);&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;and expect to get some value back for result.  &lt;/p&gt;
+
+&lt;h4 id="sohowdoiusepromises"&gt;So how do I use Promises?&lt;/h4&gt;
+
+&lt;p&gt;Promises demand that you provide a function to act on their results.  This function is passed as an argument in a .then method applied to the Promise in question.  Like so:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;somePromise(args).then(function(result){
+    console.log('The result was ', result);
+});&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;This is the basic form of a promise chain.  All we are doing here is telling the 2nd action (the console log) to wait for the 1st action (the promise) to finish it's task before the 2nd action occurs.  &lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;The result of a Promise will always be passed as the first argument to whatever function shows up in the next .then call.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;So we can use this to set up a longer chain:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;somePromise(args).then(function(radius){
+    return radius*2;
+})
+.then(function(diameter){
+    return diameter*3.14159;
+})
+.then(function(circumference){
+    console.log('The circumference is ' + circumference);
+});&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Admittedly, this looks a little goofy when we are just chaining synchronous code together.  But that's just an example.  Promises show their use when asynchronous functions are in play:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;readFromFile(fileName).then(function(fileData){
+    return queryDatabaseForData(fileData);
+}).then(function(databaseData){
+    return writeToFile(databaseData);
+})&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;It should be apparent now why Promises are useful.  In a clear and concise manner, we have built series of asynchronous function calls into a block of code that will run in a coherent manner.&lt;/p&gt;
+
+&lt;h4 id="sowhatsthecatch"&gt;So what's the catch?&lt;/h4&gt;
+
+&lt;p&gt;See all those asynchronous functions up there?  readFromFile, queryDatabaseForData, and writeToFile?  These are all functions that return promises.  &lt;em&gt;If your asynchronous operations do not return a Promise, the special waiting behavior of Promises will be broken.&lt;/em&gt;  In short, if you want the downstream code in your chain to wait, you need to return a Promise in the upstream code or only have synchronous operations.&lt;/p&gt;
+
+&lt;p&gt;I screw this part up a lot.  Sometimes I try to make generic asynchronous calls in my .then functions, or other times I forget to return the Promise I've invoked.  Either of these things will make your code behave in a way you don't want it to.&lt;/p&gt;
+
+&lt;h4 id="otherneatthingsyoucando"&gt;Other neat things you can do&lt;/h4&gt;
+
+&lt;p&gt;Promises have other related functionality that can really come in handy.  For example, Promise.all takes an array of Promises, and doesn't move to the 'then' behavior until they have all resolved.  The data produced will be an array storing the data from each Promise resolution, in the order they exist in the array:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;Promise.all([Promise1, Promise2, Promise3]).then(function(results){
+   for(var i = 0; i &amp;lt; results.length; i++){
+       console.log('The result of Promise ' + i + ' was ' + results[i]);
+   }
+});&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Another neat one is Promise.race, which lets you provide an array of Promises and see which one finishes first.&lt;/p&gt;
+
+&lt;h4 id="closingthoughts"&gt;Closing thoughts&lt;/h4&gt;
+
+&lt;p&gt;Promises are clean and practical when you apply them correctly, but I recommended spending some time with the documentation before trying to implement them yourself.  Look at how to generate your own promises -- when you can apply the Promise.promisify function, and what to do when you can't.  Look into error handling, which is also made tidy by Promises (with a possible loss in functionality).&lt;/p&gt;
+
+&lt;p&gt;But don't let some of the complexity scare you away.  You don't have to understand all the nitty gritty to make Promises work for you!&lt;/p&gt;</content:encoded></item><item><title>On Backbone</title><description>&lt;p&gt;I've been learning how to utilize the Backbone framework recently and I wanted to share some of my findings.  While flexibility is a point in Backbone's favor, this seems to have lead to a lack of agreed-upon best practices and some uncertainty on how exactly to fit the various views&lt;/p&gt;</description><link>http://localhost:2368/on-backbone/</link><guid isPermaLink="false">b5691711-4975-4bed-9266-5e1d0b74d574</guid><dc:creator>Adam Grimm</dc:creator><pubDate>Sun, 25 Oct 2015 19:53:22 GMT</pubDate><content:encoded>&lt;p&gt;I've been learning how to utilize the Backbone framework recently and I wanted to share some of my findings.  While flexibility is a point in Backbone's favor, this seems to have lead to a lack of agreed-upon best practices and some uncertainty on how exactly to fit the various views and models together.  Below is some of my insight on the matter.&lt;/p&gt;
 
 &lt;h5 id="views"&gt;Views&lt;/h5&gt;
 
