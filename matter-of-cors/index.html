@@ -1,0 +1,204 @@
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Matter of CORS</title>
+    <meta name="description" content="">
+
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="shortcut icon" href="../favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="../assets/css/screen.css?v=f56d55585f">
+    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic%7COpen+Sans:700,400">
+
+    <link rel="canonical" href="index.html">
+    <meta name="referrer" content="origin">
+    
+    <meta property="og:site_name" content="Good Kid, Hack City">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Matter of CORS">
+    <meta property="og:description" content="Cross-origin resource sharing. AKA CORS. AKA The thing that stops you from doing the thing you want to do.  What exactly is CORS, and how do we get around it? Your  browser is a concerned parent... ...and remote origins are...">
+    <meta property="og:url" content="http://localhost:2368/matter-of-cors/">
+    <meta property="article:published_time" content="2015-11-13T22:14:02.673Z">
+    <meta property="article:modified_time" content="2015-11-13T22:14:02.672Z">
+    
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Matter of CORS">
+    <meta name="twitter:description" content="Cross-origin resource sharing. AKA CORS. AKA The thing that stops you from doing the thing you want to do.  What exactly is CORS, and how do we get around it? Your  browser is a concerned parent... ...and remote origins are...">
+    <meta name="twitter:url" content="http://localhost:2368/matter-of-cors/">
+    
+    <script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "Article",
+    "publisher": "Good Kid, Hack City",
+    "author": {
+        "@type": "Person",
+        "name": "Adam Grimm",
+        "url": "http://localhost:2368/author/adam",
+        "sameAs": null,
+        "description": null
+    },
+    "headline": "Matter of CORS",
+    "url": "http://localhost:2368/matter-of-cors/",
+    "datePublished": "2015-11-13T22:14:02.673Z",
+    "dateModified": "2015-11-13T22:14:02.672Z",
+    "description": "Cross-origin resource sharing. AKA CORS. AKA The thing that stops you from doing the thing you want to do.  What exactly is CORS, and how do we get around it? Your  browser is a concerned parent... ...and remote origins are..."
+}
+    </script>
+
+    <meta name="generator" content="Ghost 0.7">
+    <link rel="alternate" type="application/rss+xml" title="Good Kid, Hack City" href="../rss/index.html">
+</head>
+<body class="post-template nav-closed">
+
+    <div class="nav">
+    <h3 class="nav-title">Menu</h3>
+    <a href="index.html#" class="nav-close">
+        <span class="hidden">Close</span>
+    </a>
+    <ul>
+            <li class="nav-home" role="presentation"><a href="../">Home</a></li>
+    </ul>
+    <a class="subscribe-button icon-feed" href="../rss/index.rss">Subscribe</a>
+</div>
+<span class="nav-cover"></span>
+
+
+    <div class="site-wrapper">
+
+        
+
+
+<header class="main-header post-head no-cover">
+    <nav class="main-nav  clearfix">
+        
+            <a class="menu-button icon-menu" href="index.html#"><span class="word">Menu</span></a>
+    </nav>
+</header>
+
+<main class="content" role="main">
+    <article class="post">
+
+        <header class="post-header">
+            <h1 class="post-title">Matter of CORS</h1>
+            <section class="post-meta">
+                <time class="post-date" datetime="2015-11-13">13 November 2015</time> 
+            </section>
+        </header>
+
+        <section class="post-content">
+            <p>Cross-origin resource sharing. AKA CORS. AKA The thing that stops you from doing the thing you want to do.  What exactly is CORS, and how do we get around it?</p>
+
+<h4 id="yourbrowserisaconcernedparent">Your  browser is a concerned parent...</h4>
+
+<p>...and remote origins are stranger danger.  CORS is  safeguard implemented by your web browsers to prevent a website you trust from giving you resources from a website you don't trust.</p>
+
+<p>The short of it is that the browser will not allow the current webpage to make an AJAX request to a different site -- the resources cannot be shared across origins.</p>
+
+<p>Let me re-iterate that your browser is the one implementing this safeguard.  For better or for worse.  This can be frustrating, especially because...</p>
+
+<h4 id="corsdoesntsolvetheproblem">CORS doesn't solve the problem</h4>
+
+<p>There are many ways for malicious sites to get around the CORS problem.  For one, CORS only stops AJAX requests.  That means a malicious site can still make non-AJAX HTTP requests (say, using a form submission) to access transfer data to a site of another origin.</p>
+
+<p>It is also possible for the attacker to convince the trustworthy site to run the malicious code.  This is known as cross-site scripting (XSS), and CORS does nothing to prevent it.</p>
+
+<h4 id="howcaniatrustworthydevelopergetaroundcorssoicanaccessresourcesfromothersites">How can I, a trustworthy developer, get around CORS so I can access resources from other sites?</h4>
+
+<p>There are a few options.  Some servers implicitly allows CORS requests.  The way this works is that the browser first checks in with the cross-origin server to see if it allows CORS.  If it does, then the AJAX request can be completed.  This means that if you want a server you control to talk to another server you control, you can specify CORS permissions between the two servers and your browser won't complain.</p>
+
+<p>You can also use iframes, which allows you to embed another HTML document within your own HTML document.  This could let you embed some content from Facebook (say, their commenting service) and let Facebook's own iframe, on your page, transmit data to Facebook.</p>
+
+<p>Lastly, if the data you want to access lives in a javascript file on another site, then you are in luck.  CORS does not prevent script tags from loading javascript files from a different origin!  However, to actually use this data, you will likely need to wrap the cross-origin javascript file in some javascript of your own, so you can access their variables.  This can be accomplished with JSONP.</p>
+
+<p>JSONP allows you to make a pseudo-AJAX call to a javascript file on a server and specify a wrapper function.  The wrapper function will run when the javascript data is returned and will have access to the variables located in the cross-origin javascript's scope.  This lets us bypass CORS!  JSONP can be a little tricky to implement though, and only works if there is a javascript file hosted on another service that we want to access, so it's not a cure-all.</p>
+
+<h3 id="ultimately">Ultimately</h3>
+
+<p>CORS is kind of a bummer.  Our browsers' are trying to protect us, but frankly they are as much as a detriment to honest developers as they are to malicious ones.  And CORS isn't entirely affective against in the latter case either.  Fortunately, if you know what you want to do, there are ways to bypass CORS and get the information you are searching for.  Good luck!</p>
+            <div id="disqus_thread"></div>
+            <script>
+                /**
+                 *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+                 *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+                 */
+                /*
+                var disqus_config = function () {
+                    this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+                    this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+                };
+                */
+                (function() {  // DON'T EDIT BELOW THIS LINE
+                    var d = document, s = d.createElement('script');
+                    
+                    s.src = '//gkhcblog.disqus.com/embed.js';
+                    
+                    s.setAttribute('data-timestamp', +new Date());
+                    (d.head || d.body).appendChild(s);
+                })();
+            </script>
+            <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+        </section>
+
+        <footer class="post-footer">
+
+
+
+            <section class="author">
+                <h4><a href="../author/adam/">Adam Grimm</a></h4>
+
+                    <p>Read <a href="../author/adam/">more posts</a> by this author.</p>
+                <div class="author-meta">
+                    <span class="author-location icon-location">San Francisco, California</span>
+                    
+                </div>
+            </section>
+
+
+            <section class="share">
+                <h4>Share this post</h4>
+                <a class="icon-twitter" href="https://twitter.com/intent/tweet?text=Matter%20of%20CORS&amp;url=http://localhost:2368/matter-of-cors/" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <span class="hidden">Twitter</span>
+                </a>
+                <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:2368/matter-of-cors/" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <span class="hidden">Facebook</span>
+                </a>
+                <a class="icon-google-plus" href="https://plus.google.com/share?url=http://localhost:2368/matter-of-cors/" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <span class="hidden">Google+</span>
+                </a>
+            </section>
+
+        </footer>
+
+    </article>
+</main>
+
+<aside class="read-next">
+    <a class="read-next-story prev no-cover" href="../how-i-keep-breaking-promises/">
+        <section class="post">
+            <h2>How I keep breaking Promises</h2>
+            <p>Promises are a useful tool when dealing with asynchronous operations in Javascript.  They do some clean-up work to make…</p>
+        </section>
+    </a>
+</aside>
+
+
+
+        <footer class="site-footer clearfix">
+            <section class="copyright"><a href="../">Good Kid, Hack City</a> © 2015</section>
+            <section class="poweredby">Proudly published with <a href="https://ghost.org">Ghost</a></section>
+        </footer>
+
+    </div>
+
+    
+
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" src="../assets/js/jquery.fitvids.js?v=f56d55585f"></script>
+    <script type="text/javascript" src="../assets/js/index.js?v=f56d55585f"></script>
+
+</body>
