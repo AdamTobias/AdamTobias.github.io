@@ -1,4 +1,30 @@
-<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/" version="2.0"><channel><title>Good Kid, Hack City</title><description>A journey</description><link>http://localhost:2368/</link><generator>Ghost 0.7</generator><lastBuildDate>Fri, 13 Nov 2015 22:15:04 GMT</lastBuildDate><atom:link href="http://localhost:2368/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title>Matter of CORS</title><description>&lt;p&gt;Cross-origin resource sharing. AKA CORS. AKA The thing that stops you from doing the thing you want to do.  What exactly is CORS, and how do we get around it?&lt;/p&gt;
+<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/" version="2.0"><channel><title>Good Kid, Hack City</title><description>A journey</description><link>http://localhost:2368/</link><generator>Ghost 0.7</generator><lastBuildDate>Fri, 29 Jan 2016 06:44:03 GMT</lastBuildDate><atom:link href="http://localhost:2368/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title>The Joys of Continuous Integration</title><description>&lt;p&gt;On my current project, I've been tasked with some of the DevOps tasks, including continuous integration.  I didn't really know much about this process, so I've had to figure a lot of stuff out as I went.  I'm sure some of my techniques and methodologies were not best practices, but&lt;/p&gt;</description><link>http://localhost:2368/the-joys-of-continuous-deployment/</link><guid isPermaLink="false">bd9f2457-4f1d-4e3b-83cf-9a5a43ddd11a</guid><dc:creator>Adam Grimm</dc:creator><pubDate>Fri, 29 Jan 2016 06:41:59 GMT</pubDate><content:encoded>&lt;p&gt;On my current project, I've been tasked with some of the DevOps tasks, including continuous integration.  I didn't really know much about this process, so I've had to figure a lot of stuff out as I went.  I'm sure some of my techniques and methodologies were not best practices, but I wanted to share my experience and some of the troubles I've had along the way.&lt;/p&gt;
+
+&lt;h5 id="whatshouldtheworkflowbe"&gt;What should the workflow be?&lt;/h5&gt;
+
+&lt;p&gt;This is a question you will need to ask yourself before determining your CI methodology.  Different groups will likely have their own preferences on how they prefer the workflow.  &lt;/p&gt;
+
+&lt;p&gt;My group knew we wanted to requirements on style, linting, and tests upstream of any updates to the master group repository.  We also decided it would be best to have a 'staging' deployment area that would be automatically set up on any merges to the master branch on GitHub.  When this staging area was properly vetted, the project could be moved to the 'production' server.&lt;/p&gt;
+
+&lt;h5 id="wherearethecheckpoints"&gt;Where are the checkpoints?&lt;/h5&gt;
+
+&lt;p&gt;Sure, it's obvious that tests and consistent style are good things.  But where should our automated tools check for these?&lt;/p&gt;
+
+&lt;p&gt;I implemented a pre-commit hook for the linting and style checking processes.  I used the pre-commit npm module to set the hook, JSHint for the linting, and JSCS for the style checks.  We decided that it would be best to prevent each user from committing code with style and linting errors, as we didn't want to be caught off guard by a laundry list of things to clean up when we decided to make a pull request.&lt;/p&gt;
+
+&lt;p&gt;The automated testing checkpoint was placed on the organizational GitHub repo.  We have a private repo, which doesn't play well with automated testing on pull requests.  Our scheme is to push code directly to a user branch on the organizational repo, which triggers the automated testing (powered by Circle CI).  This runs our gulp testing task.  When the user makes a pull request from his organizational branch to the organizational master, the results of the Circle CI testing are displayed.&lt;/p&gt;
+
+&lt;p&gt;We also decided to integrate testing into the automated deployment process, just in case anything about the AWS environment disrupts our application.&lt;/p&gt;
+
+&lt;h4 id="automateddeployment"&gt;Automated Deployment&lt;/h4&gt;
+
+&lt;p&gt;Deployment is a drag, and I don't want to have to manually trigger deployment every time my codebase is updated.  Enter AWS CodeDeploy.  This tool listens for changes to the default branch of a specified repo and deploys the new revision to your AWS instance automatically.  You can include a yaml file and various shell scripts to run at various parts of the deployment process.  For example, I know I want &lt;code&gt;npm install&lt;/code&gt; to run every time the app is deployed in case new dependencies are included.&lt;/p&gt;
+
+&lt;p&gt;One potential pratfall: the AWS yaml file allows you to set hooks at various points in the install process to run your script files.  One of these hooks is on "ApplicationStop."  This occurs before deployment of the new revision, and actually runs existing script files before replacing them with the new code.  Now, imagine that your ApplicationStop script is bugged.  Since the deployment process halts on any failing script, your auto deploy will never be able to replace the bad script with a functional one!  Fortunately, there is a way to manually deploy using the AWS CLI and ignore the ApplicationStop hook.&lt;/p&gt;
+
+&lt;h5 id="summary"&gt;Summary&lt;/h5&gt;
+
+&lt;p&gt;Development Operations are time consuming and can be very frustrating.  However, a good development environment can pay massive dividends throughout the lifetime of your project.  Just like when planning your code, the DevOps scheme must be carefully planned and architected, but the results are indisputable.&lt;/p&gt;</content:encoded></item><item><title>Matter of CORS</title><description>&lt;p&gt;Cross-origin resource sharing. AKA CORS. AKA The thing that stops you from doing the thing you want to do.  What exactly is CORS, and how do we get around it?&lt;/p&gt;
 
 &lt;h4 id="yourbrowserisaconcernedparent"&gt;Your  browser is a concerned parent...&lt;/h4&gt;
 
