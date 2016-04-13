@@ -1,0 +1,215 @@
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Go Go gadget datatypes!</title>
+    <meta name="description" content="">
+
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="shortcut icon" href="../favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="../assets/css/screen.css?v=39a772fda5">
+    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic%7COpen+Sans:700,400">
+
+    <link rel="canonical" href="index.html">
+    <meta name="referrer" content="origin">
+    
+    <meta property="og:site_name" content="Good Kid, Hack City">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Go Go gadget datatypes!">
+    <meta property="og:description" content="When learning a new language, it's often beneficial to start with the variables -- how do we declare them; what is their syntax; how can I relate new data structures to ones I already know; etc.  I've been learning Go...">
+    <meta property="og:url" content="http://localhost:2368/go-lang-go-lang-gadget-datatypes/">
+    <meta property="article:published_time" content="2016-04-13T04:38:52.435Z">
+    <meta property="article:modified_time" content="2016-04-13T04:38:52.432Z">
+    
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Go Go gadget datatypes!">
+    <meta name="twitter:description" content="When learning a new language, it's often beneficial to start with the variables -- how do we declare them; what is their syntax; how can I relate new data structures to ones I already know; etc.  I've been learning Go...">
+    <meta name="twitter:url" content="http://localhost:2368/go-lang-go-lang-gadget-datatypes/">
+    
+    <script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "Article",
+    "publisher": "Good Kid, Hack City",
+    "author": {
+        "@type": "Person",
+        "name": "Adam Grimm",
+        "url": "http://localhost:2368/author/adam",
+        "sameAs": null,
+        "description": null
+    },
+    "headline": "Go Go gadget datatypes!",
+    "url": "http://localhost:2368/go-lang-go-lang-gadget-datatypes/",
+    "datePublished": "2016-04-13T04:38:52.435Z",
+    "dateModified": "2016-04-13T04:38:52.432Z",
+    "description": "When learning a new language, it&#x27;s often beneficial to start with the variables -- how do we declare them; what is their syntax; how can I relate new data structures to ones I already know; etc.  I&#x27;ve been learning Go..."
+}
+    </script>
+
+    <meta name="generator" content="Ghost 0.7">
+    <link rel="alternate" type="application/rss+xml" title="Good Kid, Hack City" href="../rss/index.html">
+</head>
+<body class="post-template nav-closed">
+
+    <div class="nav">
+    <h3 class="nav-title">Menu</h3>
+    <a href="index.html#" class="nav-close">
+        <span class="hidden">Close</span>
+    </a>
+    <ul>
+            <li class="nav-home" role="presentation"><a href="../">Home</a></li>
+    </ul>
+    <a class="subscribe-button icon-feed" href="../rss/index.rss">Subscribe</a>
+</div>
+<span class="nav-cover"></span>
+
+
+    <div class="site-wrapper">
+
+        
+
+
+<header class="main-header post-head no-cover">
+    <nav class="main-nav  clearfix">
+        
+            <a class="menu-button icon-menu" href="index.html#"><span class="word">Menu</span></a>
+    </nav>
+</header>
+
+<main class="content" role="main">
+    <article class="post">
+
+        <header class="post-header">
+            <h1 class="post-title">Go Go gadget datatypes!</h1>
+            <section class="post-meta">
+                <time class="post-date" datetime="2016-04-12">12 April 2016</time> 
+            </section>
+        </header>
+
+        <section class="post-content">
+            <p>When learning a new language, it's often beneficial to start with the variables -- how do we declare them; what is their syntax; how can I relate new data structures to ones I already know; etc.  I've been learning Go for the past few months and gone through a lot of ups-and-downs in trying to learn a statically-typed language when all I knew before, JavaScript, was untyped.</p>
+
+<h5 id="whatdoesitmeantobestaticallytyped">What does it mean to be statically typed?</h5>
+
+<p>Basically, it means that all variables are assigned types when they are declared, and these types are gospel -- they may never be changed while that variable is still in memory.  In JavaScript, variables have no type -- you can assign whatever type of data (integer, string, array, etc) to any variable you like.  This paradigm in Go is very difficult to get used to if you are coming from an untyped language.</p>
+
+<p>Variable types throughout the code are checked upon compilation to verify that all variables are adhering to their given types.  If you try to do something like </p>
+
+<p><code>var a int
+ a = "hello world"</code></p>
+
+<p>your program will blow up when it tries to compile.  JavaScript will allow this behavior, and if there ever is an issue with variable types, it will only detect it during run-time.</p>
+
+<p>This can be very frustrating at times, as it limits what you can do with your variables.  Functions are declared to accept only specific types, so if you try to send an array of characters to a function that needs a string, ka-blooey.  My experiences has involved frequent type-conversions to maneuver my data through the workflow.</p>
+
+<p>However, there are very clear advantages to a typed language.  It prevents a lot of small but application-breaking errors since it vets all of your code.  It also aids in writing small, re-useable functions, as your functions can be written with 100% confidence in the type of data that will be passed in as an argument.  Additionally, there will be no confusion about the type of data returned from the function either.</p>
+
+<h5 id="comparingdatatypesingotojavascript">Comparing data types in Go to JavaScript</h5>
+
+<p>Let's look at what each language has to offer.</p>
+
+<p><strong>Boolean and Strings:</strong> These behave largely the same in both languages</p>
+
+<p><strong>'Numeric':</strong> JavaScript has the type 'number' which can be used to represent any (well, most) positive or negative number.  Go has a variety of numeric datatypes; each is tailored to be optimized for the expected numeric information to be stored.  Numbers may be signed or unsigned (unsigned numbers cannot be negative) and may include only small numbers (e.g. int8), extend also to large numbers (e.g. int64), or specify the inclusion of decimal values (float32 or float64).</p>
+
+<p>As always, Go requires a higher degree of specificity and rigidity than JavaScript.</p>
+
+<p><strong>Maps (Go) and Objects (JavaScript):</strong> These represent the default hash table implementation in their respective languages.  They operate very similarly, except that in Go, as you may expect, you are required to specify the data type of both the key and the value when you declare your maps.</p>
+
+<p><strong>Arrays:</strong> In JavaScript, array are not restricted by any pre-defined length and may be grown or shrunk as needed.  This is not the case in Go -- array lengths must be declared at the outset and cannot be modified.</p>
+
+<p>However, Go does have an additional data type which behaves more closely to arrays in JavaScript known as a Slice.  Slices are an abstraction of arrays -- a slice describes a segment of an array by specifying a pointer to the start of the array, the length, and the capacity (maximum length).  Even though slices have a specified capacity, Go provides default functions, such as 'append', which allow us to grow our slice past the specified capacity.  Append operates much like the 'push' function in JavaScript.</p>
+
+<p><strong>Structs (Go) vs Classes (JavaScript (specifically, ES6)):</strong> Ok, so I can't really comment much on ES6 Classes, as I've never worked with them.  I believe these are analogues though, where we can define properties and methods belonging to our new custom data types.</p>
+
+<h5 id="takeaway">Takeaway</h5>
+
+<p>If you come from a typeless (or dynamically typed) language, it can be a bit of a shock to have to deal with statically typed variables.  I recommend spending a lot of time up front getting familiar with these concepts, since it will impact virtually every piece of code you write.  </p>
+
+<p>Happy hacking!</p>
+            <div id="disqus_thread"></div>
+            <script>
+                /**
+                 *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+                 *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+                 */
+                /*
+                var disqus_config = function () {
+                    this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+                    this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+                };
+                */
+                (function() {  // DON'T EDIT BELOW THIS LINE
+                    var d = document, s = d.createElement('script');
+                    
+                    s.src = '//gkhcblog.disqus.com/embed.js';
+                    
+                    s.setAttribute('data-timestamp', +new Date());
+                    (d.head || d.body).appendChild(s);
+                })();
+            </script>
+            <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+        </section>
+
+        <footer class="post-footer">
+
+
+
+            <section class="author">
+                <h4><a href="../author/adam/">Adam Grimm</a></h4>
+
+                    <p>Read <a href="../author/adam/">more posts</a> by this author.</p>
+                <div class="author-meta">
+                    <span class="author-location icon-location">San Francisco, California</span>
+                    
+                </div>
+            </section>
+
+
+            <section class="share">
+                <h4>Share this post</h4>
+                <a class="icon-twitter" href="https://twitter.com/intent/tweet?text=Go%20Go%20gadget%20datatypes!&amp;url=http://localhost:2368/go-lang-go-lang-gadget-datatypes/" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <span class="hidden">Twitter</span>
+                </a>
+                <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:2368/go-lang-go-lang-gadget-datatypes/" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <span class="hidden">Facebook</span>
+                </a>
+                <a class="icon-google-plus" href="https://plus.google.com/share?url=http://localhost:2368/go-lang-go-lang-gadget-datatypes/" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <span class="hidden">Google+</span>
+                </a>
+            </section>
+
+        </footer>
+
+    </article>
+</main>
+
+<aside class="read-next">
+    <a class="read-next-story prev no-cover" href="../service-oriented-architecture-applying-good-coding-practices-to-back-end-design/">
+        <section class="post">
+            <h2>Service Oriented Architecture -- applying good coding practices to back-end design</h2>
+            <p>I've been working on a project for Hack Reactor infrastructure that provides employees with an interface to view, create,…</p>
+        </section>
+    </a>
+</aside>
+
+
+
+        <footer class="site-footer clearfix">
+            <section class="copyright"><a href="../">Good Kid, Hack City</a> © 2016</section>
+            <section class="poweredby">Proudly published with <a href="https://ghost.org">Ghost</a></section>
+        </footer>
+
+    </div>
+
+    
+
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" src="../assets/js/jquery.fitvids.js?v=39a772fda5"></script>
+    <script type="text/javascript" src="../assets/js/index.js?v=39a772fda5"></script>
+
+</body>
